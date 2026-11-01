@@ -1,0 +1,6 @@
+target/
+frontend/node_modules/
+data/
+*.log
+.DS_Store
+.mvn/wrapper/apache-maven-*/

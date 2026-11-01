@@ -1,0 +1,24 @@
+CANARYDOCK — EXPERIMENT 9.2
+Harshit Thakur | 23BAI70435 | Full Stack II (CO6 / BT6)
+
+Open this folder (the one containing backend and frontend) in VS Code.
+Requires Java 17+ and Node.js 18+ (Node 22 recommended).
+
+TERMINAL 1 — BACKEND
+cd backend
+.\START_BACKEND.cmd   (or powershell -File .\run-backend.ps1)
+
+TERMINAL 2 — FRONTEND (new terminal in project root)
+cd frontend
+node server.cjs       (or powershell -File .\run-frontend.ps1)
+
+Open http://localhost:3000 in your browser.
+Backend health: http://localhost:8080/actuator/health
+Keep BOTH terminals open.
+
+Source development instead of the prebuilt backend:
+Inside backend: .\mvnw.cmd spring-boot:run
+
+Frontend uses Node built-in modules: npm install is NOT required.
+Do not use Live Server: the Node frontend server forwards API calls to the backend.
+See README.md for full instructions and docs/DEPLOYMENT.md for real CD.

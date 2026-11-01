@@ -1,0 +1,1782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Experiment 6.2 | Query Optimization</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #f5f7fb;
+            color: #172033;
+        }
+
+        /* ================= HEADER ================= */
+
+        header {
+            background: #111827;
+            color: white;
+            height: 78px;
+            padding: 0 45px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .logo {
+            width: 44px;
+            height: 44px;
+
+            background: #2563eb;
+            border-radius: 11px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 21px;
+            font-weight: bold;
+        }
+
+        .brand h1 {
+            font-size: 20px;
+        }
+
+        .brand p {
+            color: #9ca3af;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .experiment-badge {
+            background: #1f2937;
+            border: 1px solid #374151;
+
+            padding: 9px 17px;
+            border-radius: 20px;
+
+            font-size: 12px;
+        }
+
+        /* ================= MAIN ================= */
+
+        main {
+            max-width: 1250px;
+            margin: auto;
+            padding: 38px 25px 50px;
+        }
+
+        .intro {
+            margin-bottom: 28px;
+        }
+
+        .intro h2 {
+            font-size: 30px;
+            margin-bottom: 7px;
+        }
+
+        .intro p {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        /* ================= STATS ================= */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 17px;
+
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid #e3e7ee;
+
+            border-radius: 14px;
+            padding: 21px;
+
+            box-shadow: 0 3px 12px rgba(0,0,0,0.04);
+        }
+
+        .stat-label {
+            color: #6b7280;
+            font-size: 12px;
+            margin-bottom: 9px;
+        }
+
+        .stat-value {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        /* ================= GENERAL PANEL ================= */
+
+        .panel {
+            background: white;
+            border: 1px solid #e1e5eb;
+
+            border-radius: 15px;
+            padding: 25px;
+
+            margin-bottom: 24px;
+
+            box-shadow: 0 3px 12px rgba(0,0,0,0.035);
+        }
+
+        .panel-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 20px;
+        }
+
+        .panel-heading h3 {
+            font-size: 18px;
+        }
+
+        .panel-heading p {
+            color: #6b7280;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        /* ================= ADD USER ================= */
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.4fr 1fr 1fr;
+            gap: 15px;
+        }
+
+        .field label {
+            display: block;
+
+            color: #475569;
+            font-size: 11px;
+            font-weight: bold;
+
+            margin-bottom: 7px;
+        }
+
+        .field input {
+            width: 100%;
+
+            padding: 12px 13px;
+
+            border: 1px solid #d5dae2;
+            border-radius: 8px;
+
+            outline: none;
+            font-size: 13px;
+
+            transition: 0.2s;
+        }
+
+        .field input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.08);
+        }
+
+        .add-button {
+            margin-top: 18px;
+
+            padding: 11px 21px;
+
+            background: #2563eb;
+            color: white;
+
+            border: none;
+            border-radius: 8px;
+
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .add-button:hover {
+            background: #1d4ed8;
+        }
+
+        .message {
+            margin-top: 12px;
+            font-size: 12px;
+            display: none;
+        }
+
+        /* ================= QUERY CARDS ================= */
+
+        .query-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .query-card {
+            border: 1px solid #e1e5eb;
+            border-radius: 13px;
+
+            padding: 19px;
+
+            background: #fafbfc;
+        }
+
+        .query-icon {
+            width: 40px;
+            height: 40px;
+
+            border-radius: 9px;
+
+            background: #eef3ff;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 18px;
+
+            margin-bottom: 13px;
+        }
+
+        .query-card h4 {
+            font-size: 15px;
+            margin-bottom: 7px;
+        }
+
+        .query-card p {
+            color: #6b7280;
+            font-size: 11px;
+            line-height: 1.5;
+
+            min-height: 50px;
+        }
+
+        .query-button {
+            width: 100%;
+
+            margin-top: 14px;
+            padding: 10px;
+
+            border: none;
+            border-radius: 7px;
+
+            background: #172033;
+            color: white;
+
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .query-button:hover {
+            background: #2563eb;
+        }
+
+        /* ================= QUERY RESULT ================= */
+
+        .result-box {
+            display: none;
+
+            margin-top: 20px;
+
+            border: 1px solid #dce2ea;
+            border-radius: 11px;
+
+            overflow: hidden;
+        }
+
+        .result-header {
+            background: #f8fafc;
+
+            padding: 16px 18px;
+
+            display: flex;
+            gap: 45px;
+
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .result-stat span {
+            display: block;
+
+            color: #64748b;
+            font-size: 10px;
+
+            margin-bottom: 5px;
+        }
+
+        .result-stat strong {
+            font-size: 16px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f1f5f9;
+
+            padding: 12px;
+
+            text-align: left;
+
+            font-size: 11px;
+            color: #475569;
+        }
+
+        td {
+            padding: 12px;
+
+            border-bottom: 1px solid #edf0f4;
+
+            font-size: 12px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* ================= PERFORMANCE ================= */
+
+        .performance-grid {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+
+            gap: 20px;
+        }
+
+        .performance-card {
+            background: #111827;
+            color: white;
+
+            border-radius: 15px;
+            padding: 24px;
+        }
+
+        .performance-card h3 {
+            font-size: 17px;
+            margin-bottom: 5px;
+        }
+
+        .performance-card p {
+            color: #9ca3af;
+            font-size: 11px;
+            margin-bottom: 22px;
+        }
+
+        .performance-row {
+            margin-bottom: 17px;
+        }
+
+        .performance-label {
+            display: flex;
+            justify-content: space-between;
+
+            font-size: 11px;
+
+            margin-bottom: 7px;
+        }
+
+        .bar {
+            height: 8px;
+
+            background: #374151;
+
+            border-radius: 20px;
+
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            width: 0%;
+
+            background: #60a5fa;
+
+            border-radius: 20px;
+
+            transition: width 0.5s;
+        }
+
+        /* ================= CONCEPTS ================= */
+
+        .concept-card {
+            background: white;
+
+            border: 1px solid #e1e5eb;
+
+            border-radius: 15px;
+
+            padding: 24px;
+        }
+
+        .concept-card h3 {
+            font-size: 17px;
+            margin-bottom: 17px;
+        }
+
+        .concept {
+            padding: 12px;
+
+            background: #f8fafc;
+
+            border-radius: 8px;
+
+            margin-bottom: 10px;
+
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .concept strong {
+            color: #2563eb;
+        }
+
+        /* ================= DATABASE ================= */
+
+        .record-badge {
+            background: #eff6ff;
+            color: #2563eb;
+
+            padding: 7px 12px;
+
+            border-radius: 20px;
+
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .delete-button {
+            border: none;
+
+            background: #fee2e2;
+            color: #dc2626;
+
+            padding: 6px 10px;
+
+            border-radius: 6px;
+
+            cursor: pointer;
+
+            font-size: 11px;
+        }
+
+        .delete-button:hover {
+            background: #fecaca;
+        }
+
+        /* ================= FOOTER ================= */
+
+        footer {
+            text-align: center;
+
+            padding: 25px;
+
+            color: #9ca3af;
+
+            font-size: 11px;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media(max-width: 950px) {
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .query-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .form-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .performance-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media(max-width: 600px) {
+
+            header {
+                padding: 0 18px;
+            }
+
+            .experiment-badge {
+                display: none;
+            }
+
+            main {
+                padding: 25px 15px;
+            }
+
+            .stats,
+            .query-grid,
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .intro h2 {
+                font-size: 25px;
+            }
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+<!-- ================= HEADER ================= -->
+
+<header>
+
+    <div class="brand">
+
+        <div class="logo">
+            ⚡
+        </div>
+
+        <div>
+            <h1>Backend Performance Lab</h1>
+
+            <p>
+                Caching & Query Optimization
+            </p>
+        </div>
+
+    </div>
+
+
+    <div class="experiment-badge">
+        Experiment 6.2
+    </div>
+
+</header>
+
+
+<main>
+
+    <!-- ================= INTRO ================= -->
+
+    <section class="intro">
+
+        <h2>
+            Database Performance Center
+        </h2>
+
+        <p>
+            Add users, execute different query strategies,
+            and compare backend performance.
+        </p>
+
+    </section>
+
+
+    <!-- ================= STATS ================= -->
+
+    <section class="stats">
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                TOTAL USERS
+            </div>
+
+            <div class="stat-value" id="totalUsers">
+                0
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                QUERY STRATEGIES
+            </div>
+
+            <div class="stat-value">
+                4
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                OPTIMIZATION
+            </div>
+
+            <div class="stat-value">
+                JOIN FETCH
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                CACHE
+            </div>
+
+            <div class="stat-value" id="cacheStatus">
+                Ready
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= ADD USER ================= -->
+
+    <section class="panel">
+
+        <div class="panel-heading">
+
+            <div>
+
+                <h3>
+                    Add New User
+                </h3>
+
+                <p>
+                    Enter user information below and save it to the database.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="form-grid">
+
+            <div class="field">
+
+                <label>
+                    USER ID
+                </label>
+
+                <input
+                    type="text"
+                    id="userId"
+                    placeholder="e.g. E20460"
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    FULL NAME
+                </label>
+
+                <input
+                    type="text"
+                    id="userName"
+                    placeholder="Enter user's name"
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    CITY
+                </label>
+
+                <input
+                    type="text"
+                    id="userCity"
+                    placeholder="Enter city"
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    COUNTRY
+                </label>
+
+                <input
+                    type="text"
+                    id="userCountry"
+                    placeholder="Enter country"
+                >
+
+            </div>
+
+        </div>
+
+
+        <button
+            class="add-button"
+            onclick="addUser()"
+        >
+            + Add User
+        </button>
+
+
+        <div
+            class="message"
+            id="message"
+        ></div>
+
+    </section>
+
+
+    <!-- ================= QUERY TESTING ================= -->
+
+    <section class="panel">
+
+        <div class="panel-heading">
+
+            <div>
+
+                <h3>
+                    Query Optimization Tests
+                </h3>
+
+                <p>
+                    Execute each approach and observe the response time.
+                </p>
+
+            </div>
+
+            <div class="record-badge">
+                LIVE DATABASE
+            </div>
+
+        </div>
+
+
+        <div class="query-grid">
+
+
+            <!-- NORMAL -->
+
+            <div class="query-card">
+
+                <div class="query-icon">
+                    🐢
+                </div>
+
+                <h4>
+                    Normal Query
+                </h4>
+
+                <p>
+                    Loads users normally and may trigger
+                    additional queries for related data.
+                </p>
+
+                <button
+                    class="query-button"
+                    onclick="runQuery('normal')"
+                >
+                    Run Normal Query
+                </button>
+
+            </div>
+
+
+            <!-- JOIN FETCH -->
+
+            <div class="query-card">
+
+                <div class="query-icon">
+                    🚀
+                </div>
+
+                <h4>
+                    JOIN FETCH
+                </h4>
+
+                <p>
+                    Fetches users and departments together
+                    to reduce unnecessary database queries.
+                </p>
+
+                <button
+                    class="query-button"
+                    onclick="runQuery('join-fetch')"
+                >
+                    Run JOIN FETCH
+                </button>
+
+            </div>
+
+
+            <!-- CACHE -->
+
+            <div class="query-card">
+
+                <div class="query-icon">
+                    🧠
+                </div>
+
+                <h4>
+                    Cached Query
+                </h4>
+
+                <p>
+                    Reuses previously retrieved data
+                    instead of repeatedly querying the database.
+                </p>
+
+                <button
+                    class="query-button"
+                    onclick="runQuery('cached')"
+                >
+                    Run Cached Query
+                </button>
+
+            </div>
+
+
+            <!-- NATIVE -->
+
+            <div class="query-card">
+
+                <div class="query-icon">
+                    🗄️
+                </div>
+
+                <h4>
+                    Native SQL
+                </h4>
+
+                <p>
+                    Executes SQL directly against the database
+                    for efficient data retrieval.
+                </p>
+
+                <button
+                    class="query-button"
+                    onclick="runQuery('native')"
+                >
+                    Run Native SQL
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- QUERY RESULT -->
+
+        <div
+            class="result-box"
+            id="resultBox"
+        >
+
+            <div class="result-header">
+
+                <div class="result-stat">
+
+                    <span>
+                        QUERY TYPE
+                    </span>
+
+                    <strong id="queryType">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="result-stat">
+
+                    <span>
+                        EXECUTION TIME
+                    </span>
+
+                    <strong id="executionTime">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="result-stat">
+
+                    <span>
+                        RECORD COUNT
+                    </span>
+
+                    <strong id="recordCount">
+                        -
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                USER ID
+                            </th>
+
+                            <th>
+                                NAME
+                            </th>
+
+                            <th>
+                                CITY
+                            </th>
+
+                            <th>
+                                COUNTRY
+                            </th>
+
+                            <th>
+                                DEPARTMENT
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="resultTable">
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= PERFORMANCE ================= -->
+
+    <section class="performance-grid">
+
+
+        <div class="performance-card">
+
+            <h3>
+                Performance Comparison
+            </h3>
+
+            <p>
+                Query execution times collected from the API.
+            </p>
+
+
+            <div class="performance-row">
+
+                <div class="performance-label">
+
+                    <span>
+                        Normal / N+1
+                    </span>
+
+                    <span id="normalTime">
+                        —
+                    </span>
+
+                </div>
+
+                <div class="bar">
+                    <div
+                        class="bar-fill"
+                        id="normalBar"
+                    ></div>
+                </div>
+
+            </div>
+
+
+            <div class="performance-row">
+
+                <div class="performance-label">
+
+                    <span>
+                        JOIN FETCH
+                    </span>
+
+                    <span id="joinTime">
+                        —
+                    </span>
+
+                </div>
+
+                <div class="bar">
+                    <div
+                        class="bar-fill"
+                        id="joinBar"
+                    ></div>
+                </div>
+
+            </div>
+
+
+            <div class="performance-row">
+
+                <div class="performance-label">
+
+                    <span>
+                        Cached Query
+                    </span>
+
+                    <span id="cachedTime">
+                        —
+                    </span>
+
+                </div>
+
+                <div class="bar">
+                    <div
+                        class="bar-fill"
+                        id="cachedBar"
+                    ></div>
+                </div>
+
+            </div>
+
+
+            <div class="performance-row">
+
+                <div class="performance-label">
+
+                    <span>
+                        Native SQL
+                    </span>
+
+                    <span id="nativeTime">
+                        —
+                    </span>
+
+                </div>
+
+                <div class="bar">
+                    <div
+                        class="bar-fill"
+                        id="nativeBar"
+                    ></div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- CONCEPTS -->
+
+        <div class="concept-card">
+
+            <h3>
+                Optimization Concepts
+            </h3>
+
+
+            <div class="concept">
+
+                <strong>
+                    N+1 Problem:
+                </strong>
+
+                Additional database queries can occur
+                when related entities are loaded separately.
+            </div>
+
+
+            <div class="concept">
+
+                <strong>
+                    JOIN FETCH:
+                </strong>
+
+                Loads related entities together
+                using a single optimized query.
+            </div>
+
+
+            <div class="concept">
+
+                <strong>
+                    Caching:
+                </strong>
+
+                Stores previously retrieved results
+                for faster repeated access.
+            </div>
+
+
+            <div class="concept">
+
+                <strong>
+                    Native SQL:
+                </strong>
+
+                Executes SQL directly against
+                the database tables.
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= DATABASE RECORDS ================= -->
+
+    <section class="panel" style="margin-top:24px;">
+
+        <div class="panel-heading">
+
+            <div>
+
+                <h3>
+                    Database Users
+                </h3>
+
+                <p>
+                    Current records stored in the H2 database.
+                </p>
+
+            </div>
+
+            <div
+                class="record-badge"
+                id="recordBadge"
+            >
+                0 RECORDS
+            </div>
+
+        </div>
+
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            USER ID
+                        </th>
+
+                        <th>
+                            NAME
+                        </th>
+
+                        <th>
+                            CITY
+                        </th>
+
+                        <th>
+                            COUNTRY
+                        </th>
+
+                        <th>
+                            ACTION
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="usersTable">
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<footer>
+
+    Experiment 6.2 • Caching and Query Optimization • Spring Boot + JPA + H2
+
+</footer>
+
+
+<script>
+
+    const API = "/api/users";
+
+
+    let performanceData = {
+
+        normal: null,
+
+        "join-fetch": null,
+
+        cached: null,
+
+        native: null
+
+    };
+
+
+    /* ================= LOAD USERS ================= */
+
+    async function loadUsers() {
+
+        try {
+
+            const response = await fetch(API);
+
+            if (!response.ok) {
+                throw new Error("Unable to load users");
+            }
+
+            const users = await response.json();
+
+
+            document.getElementById("totalUsers")
+                .textContent = users.length;
+
+
+            document.getElementById("recordBadge")
+                .textContent =
+                users.length + " RECORDS";
+
+
+            const table =
+                document.getElementById("usersTable");
+
+
+            table.innerHTML = "";
+
+
+            users.forEach(user => {
+
+                const row =
+                    document.createElement("tr");
+
+
+                row.innerHTML = `
+
+                    <td>${escapeHtml(user.uid)}</td>
+
+                    <td>
+                        ${escapeHtml(user.name)}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(user.city)}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(user.country)}
+                    </td>
+
+                    <td>
+
+                        <button
+                            class="delete-button"
+                            onclick="deleteUser('${encodeURIComponent(user.uid)}')"
+                        >
+                            Delete
+                        </button>
+
+                    </td>
+
+                `;
+
+
+                table.appendChild(row);
+
+            });
+
+
+        } catch (error) {
+
+            console.error(error);
+
+        }
+
+    }
+
+
+    /* ================= ADD USER ================= */
+
+    async function addUser() {
+
+        const uid =
+            document.getElementById("userId")
+                .value.trim();
+
+
+        const name =
+            document.getElementById("userName")
+                .value.trim();
+
+
+        const city =
+            document.getElementById("userCity")
+                .value.trim();
+
+
+        const country =
+            document.getElementById("userCountry")
+                .value.trim();
+
+
+        const message =
+            document.getElementById("message");
+
+
+        if (!uid || !name || !city || !country) {
+
+            showMessage(
+                "Please enter User ID, Name, City and Country.",
+                false
+            );
+
+            return;
+        }
+
+
+        const user = {
+
+            uid: uid,
+
+            name: name,
+
+            city: city,
+
+            country: country,
+
+            department: null
+
+        };
+
+
+        try {
+
+            const response = await fetch(API, {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify(user)
+
+            });
+
+
+            if (!response.ok) {
+
+                throw new Error("Unable to add user");
+
+            }
+
+
+            showMessage(
+                "User added successfully.",
+                true
+            );
+
+
+            document.getElementById("userId").value = "";
+
+            document.getElementById("userName").value = "";
+
+            document.getElementById("userCity").value = "";
+
+            document.getElementById("userCountry").value = "";
+
+
+            loadUsers();
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            showMessage(
+                "Could not add user. User ID may already exist.",
+                false
+            );
+
+        }
+
+    }
+
+
+    /* ================= DELETE USER ================= */
+
+    async function deleteUser(encodedUid) {
+
+        const uid =
+            decodeURIComponent(encodedUid);
+
+
+        if (!confirm(
+            "Delete user " + uid + "?"
+        )) {
+
+            return;
+
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API}/${encodeURIComponent(uid)}`,
+                    {
+                        method: "DELETE"
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Delete failed"
+                );
+
+            }
+
+
+            loadUsers();
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert(
+                "Unable to delete user."
+            );
+
+        }
+
+    }
+
+
+    /* ================= QUERY ================= */
+
+    async function runQuery(type) {
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API}/${type}`
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Query failed"
+                );
+
+            }
+
+
+            const data =
+                await response.json();
+
+
+            performanceData[type] =
+                Number(data.executionTimeMs);
+
+
+            document.getElementById(
+                "resultBox"
+            ).style.display = "block";
+
+
+            document.getElementById(
+                "queryType"
+            ).textContent =
+                data.queryType;
+
+
+            document.getElementById(
+                "executionTime"
+            ).textContent =
+                data.executionTimeMs + " ms";
+
+
+            document.getElementById(
+                "recordCount"
+            ).textContent =
+                data.recordCount;
+
+
+            displayQueryResults(
+                data.data
+            );
+
+
+            updatePerformance();
+
+
+            if (type === "cached") {
+
+                document.getElementById(
+                    "cacheStatus"
+                ).textContent =
+                    "Active";
+
+            }
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert(
+                "Unable to execute query. Make sure Spring Boot is running."
+            );
+
+        }
+
+    }
+
+
+    /* ================= QUERY RESULTS ================= */
+
+    function displayQueryResults(users) {
+
+        const table =
+            document.getElementById(
+                "resultTable"
+            );
+
+
+        table.innerHTML = "";
+
+
+        users.forEach(user => {
+
+            const row =
+                document.createElement("tr");
+
+
+            row.innerHTML = `
+
+                <td>
+                    ${escapeHtml(user.uid)}
+                </td>
+
+                <td>
+                    ${escapeHtml(user.name)}
+                </td>
+
+                <td>
+                    ${escapeHtml(user.city)}
+                </td>
+
+                <td>
+                    ${escapeHtml(user.country)}
+                </td>
+
+                <td>
+                    ${escapeHtml(
+                        user.department ||
+                        "Not Assigned"
+                    )}
+                </td>
+
+            `;
+
+
+            table.appendChild(row);
+
+        });
+
+    }
+
+
+    /* ================= PERFORMANCE ================= */
+
+    function updatePerformance() {
+
+        const values =
+            Object.values(
+                performanceData
+            )
+            .filter(
+                value =>
+                    value !== null &&
+                    !isNaN(value)
+            );
+
+
+        if (values.length === 0) {
+            return;
+        }
+
+
+        const max =
+            Math.max(
+                ...values,
+                1
+            );
+
+
+        updateBar(
+            "normal",
+            performanceData.normal,
+            max
+        );
+
+
+        updateBar(
+            "join",
+            performanceData["join-fetch"],
+            max
+        );
+
+
+        updateBar(
+            "cached",
+            performanceData.cached,
+            max
+        );
+
+
+        updateBar(
+            "native",
+            performanceData.native,
+            max
+        );
+
+    }
+
+
+    function updateBar(
+        name,
+        value,
+        max
+    ) {
+
+        if (value === null) {
+            return;
+        }
+
+
+        document.getElementById(
+            name + "Time"
+        ).textContent =
+            value + " ms";
+
+
+        const width =
+            Math.max(
+                (value / max) * 100,
+                5
+            );
+
+
+        document.getElementById(
+            name + "Bar"
+        ).style.width =
+            width + "%";
+
+    }
+
+
+    /* ================= MESSAGE ================= */
+
+    function showMessage(
+        text,
+        success
+    ) {
+
+        const message =
+            document.getElementById(
+                "message"
+            );
+
+
+        message.textContent = text;
+
+        message.style.display = "block";
+
+        message.style.color =
+            success
+                ? "#16a34a"
+                : "#dc2626";
+
+    }
+
+
+    /* ================= SECURITY ================= */
+
+    function escapeHtml(value) {
+
+        if (value === null ||
+            value === undefined) {
+
+            return "";
+
+        }
+
+
+        return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+
+    }
+
+
+    /* ================= INITIAL LOAD ================= */
+
+    loadUsers();
+
+</script>
+
+</body>
+</html>

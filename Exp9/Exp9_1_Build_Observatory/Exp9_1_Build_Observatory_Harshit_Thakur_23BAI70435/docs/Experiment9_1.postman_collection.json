@@ -1,0 +1,90 @@
+{
+  "info": {
+    "name": "Harshit Thakur - 23BAI70435 - Experiment 9.1",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8400"
+    },
+    {
+      "key": "buildId",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "Create record",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/api/builds",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"commitMessage\": \"Add CI workflow\"}"
+        }
+      }
+    },
+    {
+      "name": "List records",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/builds"
+      }
+    },
+    {
+      "name": "Get record",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/builds/{{buildId}}"
+      }
+    },
+    {
+      "name": "Reject blank",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/api/builds",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"commitMessage\": \"   \"}"
+        }
+      }
+    },
+    {
+      "name": "Reject oversized",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/api/builds",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"commitMessage\": \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"}"
+        }
+      }
+    },
+    {
+      "name": "Missing record",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/builds/99999999"
+      }
+    }
+  ]
+}

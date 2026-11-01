@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>REST API User Management System</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: #f4f6fa;
+            color: #172033;
+        }
+
+        header {
+            text-align: center;
+            padding: 35px 20px 25px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 32px;
+        }
+
+        header p {
+            color: #6b7280;
+            margin-top: 8px;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            margin-bottom: 22px;
+            border-radius: 14px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 7px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccd2dc;
+            border-radius: 7px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        button {
+            border: none;
+            padding: 10px 18px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-right: 6px;
+        }
+
+        .add {
+            background: #2563eb;
+            color: white;
+        }
+
+        .update {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .clear {
+            background: #e5e7eb;
+            color: #111827;
+        }
+
+        .refresh {
+            background: #059669;
+            color: white;
+            float: right;
+        }
+
+        .edit {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .delete {
+            background: #dc2626;
+            color: white;
+        }
+
+        .message {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 7px;
+            display: none;
+            font-size: 14px;
+        }
+
+        .success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f1f3f6;
+            text-align: left;
+            padding: 13px;
+        }
+
+        td {
+            padding: 13px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .empty {
+            text-align: center;
+            color: #777;
+            padding: 25px;
+        }
+
+        @media(max-width:700px) {
+
+            .container {
+                width: 94%;
+            }
+
+            table {
+                font-size: 13px;
+            }
+
+            button {
+                margin-bottom: 5px;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<header>
+
+    <h1>Experiment 5.1</h1>
+
+    <p>REST API User Management System</p>
+
+</header>
+
+
+<div class="container">
+
+
+    <!-- ADD USER -->
+
+    <div class="card">
+
+        <h2>Add User</h2>
+
+        <label>UID</label>
+
+        <input
+            id="uid"
+            placeholder="Enter UID">
+
+
+        <label>Name</label>
+
+        <input
+            id="name"
+            placeholder="Enter name">
+
+
+        <button
+            class="add"
+            onclick="addUser()">
+
+            Add User
+
+        </button>
+
+
+        <button
+            class="update"
+            onclick="updateUser()">
+
+            Update User
+
+        </button>
+
+
+        <button
+            class="clear"
+            onclick="clearForm()">
+
+            Clear
+
+        </button>
+
+
+        <div
+            id="message"
+            class="message">
+        </div>
+
+    </div>
+
+
+    <!-- SEARCH -->
+
+    <div class="card">
+
+        <h2>Search User</h2>
+
+        <input
+            id="searchUid"
+            placeholder="Enter UID">
+
+        <button
+            class="add"
+            onclick="searchUser()">
+
+            Search
+
+        </button>
+
+    </div>
+
+
+    <!-- USER RECORDS -->
+
+    <div class="card">
+
+        <button
+            class="refresh"
+            onclick="loadUsers()">
+
+            Refresh
+
+        </button>
+
+        <h2>User Records</h2>
+
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>UID</th>
+
+                    <th>Name</th>
+
+                    <th>Actions</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="userTable">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const API = "/api/users";
+
+
+function showMessage(text, type) {
+
+    const box =
+        document.getElementById("message");
+
+    box.innerText = text;
+
+    box.className =
+        "message " + type;
+
+    box.style.display = "block";
+}
+
+
+function clearForm() {
+
+    document.getElementById("uid").value = "";
+
+    document.getElementById("name").value = "";
+
+    document.getElementById("message").style.display =
+        "none";
+}
+
+
+async function loadUsers() {
+
+    try {
+
+        const response =
+            await fetch(API);
+
+        const result =
+            await response.json();
+
+        const table =
+            document.getElementById("userTable");
+
+        table.innerHTML = "";
+
+
+        if (!response.ok) {
+
+            showMessage(
+                result.message,
+                "error"
+            );
+
+            return;
+        }
+
+
+        const users = result.data;
+
+
+        if (users.length === 0) {
+
+            table.innerHTML = `
+                <tr>
+                    <td colspan="3"
+                        class="empty">
+                        No user records found
+                    </td>
+                </tr>
+            `;
+
+            return;
+        }
+
+
+        users.forEach(user => {
+
+            table.innerHTML += `
+
+                <tr>
+
+                    <td>${user.uid}</td>
+
+                    <td>${user.name}</td>
+
+                    <td>
+
+                        <button
+                            class="edit"
+                            onclick="editUser(
+                                '${user.uid}',
+                                '${user.name}'
+                            )">
+
+                            Edit
+
+                        </button>
+
+
+                        <button
+                            class="delete"
+                            onclick="deleteUser(
+                                '${user.uid}'
+                            )">
+
+                            Delete
+
+                        </button>
+
+                    </td>
+
+                </tr>
+            `;
+
+        });
+
+    } catch (error) {
+
+        showMessage(
+            "Unable to connect to the server.",
+            "error"
+        );
+    }
+}
+
+
+async function addUser() {
+
+    const uid =
+        document.getElementById("uid").value.trim();
+
+    const name =
+        document.getElementById("name").value.trim();
+
+
+    try {
+
+        const response =
+            await fetch(API, {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body: JSON.stringify({
+                    uid: uid,
+                    name: name
+                })
+            });
+
+
+        const result =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            showMessage(
+                result.message ||
+                "Validation failed",
+                "error"
+            );
+
+            return;
+        }
+
+
+        showMessage(
+            "User added successfully",
+            "success"
+        );
+
+
+        clearForm();
+
+        loadUsers();
+
+    } catch (error) {
+
+        showMessage(
+            "Unable to connect to the server.",
+            "error"
+        );
+    }
+}
+
+
+async function updateUser() {
+
+    const uid =
+        document.getElementById("uid").value.trim();
+
+    const name =
+        document.getElementById("name").value.trim();
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API}/${uid}`,
+                {
+
+                    method: "PUT",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        name: name
+                    })
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            showMessage(
+                result.message,
+                "error"
+            );
+
+            return;
+        }
+
+
+        showMessage(
+            "User updated successfully",
+            "success"
+        );
+
+
+        loadUsers();
+
+    } catch (error) {
+
+        showMessage(
+            "Unable to connect to the server.",
+            "error"
+        );
+    }
+}
+
+
+async function searchUser() {
+
+    const uid =
+        document.getElementById("searchUid")
+        .value.trim();
+
+
+    try {
+
+        const response =
+            await fetch(`${API}/${uid}`);
+
+
+        const result =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            showMessage(
+                result.message,
+                "error"
+            );
+
+            return;
+        }
+
+
+        document.getElementById("uid").value =
+            result.data.uid;
+
+        document.getElementById("name").value =
+            result.data.name;
+
+
+        showMessage(
+            "User found successfully",
+            "success"
+        );
+
+    } catch (error) {
+
+        showMessage(
+            "Unable to connect to the server.",
+            "error"
+        );
+    }
+}
+
+
+function editUser(uid, name) {
+
+    document.getElementById("uid").value =
+        uid;
+
+    document.getElementById("name").value =
+        name;
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+}
+
+
+async function deleteUser(uid) {
+
+    if (!confirm(
+        "Delete user " + uid + "?"
+    )) {
+        return;
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API}/${uid}`,
+                {
+                    method: "DELETE"
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            showMessage(
+                result.message,
+                "error"
+            );
+
+            return;
+        }
+
+
+        showMessage(
+            "User deleted successfully",
+            "success"
+        );
+
+
+        loadUsers();
+
+    } catch (error) {
+
+        showMessage(
+            "Unable to connect to the server.",
+            "error"
+        );
+    }
+}
+
+
+loadUsers();
+
+</script>
+
+</body>
+
+</html>

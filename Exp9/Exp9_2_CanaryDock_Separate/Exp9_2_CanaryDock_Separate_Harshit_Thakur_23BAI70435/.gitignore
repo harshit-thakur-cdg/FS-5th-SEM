@@ -1,0 +1,8 @@
+target/
+.env
+.idea/
+.vscode/
+*.log
+.DS_Store
+dist/
+__pycache__/

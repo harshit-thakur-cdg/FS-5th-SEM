@@ -1,0 +1,47 @@
+### Project and student identity
+GET http://localhost:8080/api/info
+
+### Actual backend response
+GET http://localhost:8080/api/hello
+
+### Health
+GET http://localhost:8080/actuator/health
+
+### Classroom state
+GET http://localhost:8080/api/lab
+
+### Start a candidate
+POST http://localhost:8080/api/lab
+Content-Type: application/json
+
+{"action":"start","version":"v1.1.0"}
+
+### Generate a simulated batch
+POST http://localhost:8080/api/lab
+Content-Type: application/json
+
+{"action":"traffic"}
+
+### Advance only after a healthy batch
+POST http://localhost:8080/api/lab
+Content-Type: application/json
+
+{"action":"advance"}
+
+### Toggle failure injection
+POST http://localhost:8080/api/lab
+Content-Type: application/json
+
+{"action":"fault"}
+
+### Manual rollback
+POST http://localhost:8080/api/lab
+Content-Type: application/json
+
+{"action":"rollback"}
+
+### Reset classroom state
+POST http://localhost:8080/api/lab
+Content-Type: application/json
+
+{"action":"reset"}

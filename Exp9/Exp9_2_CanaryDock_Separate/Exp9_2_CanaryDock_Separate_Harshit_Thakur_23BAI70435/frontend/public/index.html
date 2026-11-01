@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0d1117">
+  <title>CanaryDock | Harshit Thakur · 23BAI70435 · Exp 9.2</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <!-- Global Header Navigation -->
+  <header class="top-header">
+    <div class="header-left">
+      <a class="brand" href="#overview">
+        <span class="brand-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+        </span>
+        <div class="brand-text">
+          <span class="brand-name">CanaryDock <span class="tag-release">v1.0</span></span>
+          <span class="brand-sub">CONTINUOUS DEVELOPMENT &amp; RELEASE STRATEGIES</span>
+        </div>
+      </a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="#overview" class="active">Overview</a>
+        <a href="#release-lab">Release Lab</a>
+        <a href="#telemetry">Telemetry</a>
+        <a href="#activity">Activity Stream</a>
+        <a href="#pipeline-blueprint">CI/CD Pipeline</a>
+      </nav>
+    </div>
+
+    <div class="header-right">
+      <button id="theme-toggle" class="theme-btn" title="Toggle Theme (Dark / Light)" aria-label="Toggle Theme">
+        <span class="theme-icon">☀️</span> <span class="theme-label">Light</span>
+      </button>
+      <div class="owner-badge">
+        <span class="avatar">HT</span>
+        <div class="owner-meta">
+          <strong>Harshit Thakur</strong>
+          <small>UID: 23BAI70435 · CO6 / BT6</small>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="main-container">
+    <!-- Breadcrumb & Connection Status -->
+    <div class="status-ribbon">
+      <div class="breadcrumb">
+        <span>FULL STACK II</span>
+        <span class="sep">/</span>
+        <span>EXPERIMENT 9.2</span>
+        <span class="sep">/</span>
+        <span class="highlight">PROGRESSIVE CANARY DEPLOYMENT</span>
+      </div>
+      <div class="connection-group">
+        <span id="connection" class="connection-pill offline">Checking Backend...</span>
+        <span class="lab-pill">CLASSROOM RELEASE LAB</span>
+      </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="overview">
+      <div class="hero-content">
+        <div class="eyebrow-badge">
+          <span class="pulse-indicator"></span>
+          <span>PROGRESSIVE DELIVERY &amp; ZERO-DOWNTIME ROLLOUT</span>
+        </div>
+        <h1 class="hero-title">
+          Small blast radius.<br>
+          <span class="gradient-text">Confident delivery.</span>
+        </h1>
+        <p class="hero-desc">
+          Mitigate deployment risk with automated traffic splitting, synthetic anomaly detection,
+          and instant safety rollbacks. Experience how high-velocity engineering teams validate
+          production release candidates.
+        </p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="#release-lab">Launch Release Lab <span>→</span></a>
+          <button id="probe" class="btn btn-secondary">Probe Live Backend <span>⚡</span></button>
+        </div>
+        <div class="tech-stack-strip">
+          <span>DOCKER</span>
+          <span class="dot">•</span>
+          <span>SPRING BOOT 3.4</span>
+          <span class="dot">•</span>
+          <span>NGINX TRAFFIC SPLIT</span>
+          <span class="dot">•</span>
+          <span>GITHUB ACTIONS</span>
+        </div>
+      </div>
+
+      <!-- Live Release Topology Card -->
+      <div class="topology-card" aria-label="Release Topology">
+        <div class="card-head">
+          <span class="mono-label">TRAFFIC ROUTING TOPOLOGY</span>
+          <span class="chip chip-accent">SLO GATED</span>
+        </div>
+        <div class="gateway-node">
+          <div class="gateway-icon">🌐</div>
+          <div>
+            <strong>Ingress Edge Gateway (Nginx Proxy)</strong>
+            <small>Weighted Upstream Traffic Balancer</small>
+          </div>
+        </div>
+
+        <div class="routing-fork">
+          <div class="fork-line"></div>
+          <div class="fork-split">
+            <!-- Stable Channel -->
+            <div class="channel-card stable-channel">
+              <div class="channel-header">
+                <span class="status-dot teal"></span>
+                <span>Stable Release</span>
+              </div>
+              <strong id="map-stable">100%</strong>
+              <small id="topo-stable-version">v1.0.0 (Slot: A)</small>
+            </div>
+            <!-- Canary Channel -->
+            <div class="channel-card canary-channel">
+              <div class="channel-header">
+                <span class="status-dot orange"></span>
+                <span>Canary Candidate</span>
+              </div>
+              <strong id="map-canary">0%</strong>
+              <small id="topo-canary-version">None Active</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="topology-footer">
+          <span>✓ Automated Health Gate</span>
+          <span>↶ Instant Zero-Loss Rollback</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- KPI Metric Cards -->
+    <section class="metrics-grid" aria-label="Key Release Metrics">
+      <div class="metric-card">
+        <span class="metric-label">STABLE BASELINE</span>
+        <strong id="stable-version" class="metric-value">v1.0.0</strong>
+        <small class="metric-sub"><span class="status-dot teal"></span> Active production baseline</small>
+      </div>
+      <div class="metric-card">
+        <span class="metric-label">CANARY EXPOSURE</span>
+        <strong id="weight" class="metric-value">0%</strong>
+        <small id="exposure-copy" class="metric-sub">No active candidate running</small>
+      </div>
+      <div class="metric-card">
+        <span class="metric-label">LAB REQUESTS PROCESSED</span>
+        <strong id="requests" class="metric-value">0</strong>
+        <small id="success-copy" class="metric-sub">Simulate traffic to evaluate</small>
+      </div>
+      <div class="metric-card">
+        <span class="metric-label">RELEASE PHASE</span>
+        <strong id="phase" class="metric-value status-text">CONNECTING</strong>
+        <small id="phase-copy" class="metric-sub">Querying backend state machine</small>
+      </div>
+    </section>
+
+    <!-- Lab Controls & Allocation Grid -->
+    <div class="workspace-grid" id="release-lab">
+      <!-- Panel 1: Release Controls -->
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <span class="eyebrow">STAGE 01 / DEPLOYMENT PIPELINE</span>
+            <h2>Release Candidate Controller</h2>
+          </div>
+          <span class="badge-stage" id="stage-badge">STANDBY</span>
+        </div>
+        <p class="panel-desc">
+          Initialize a new release candidate. Step gradually through 10% → 50% → 100% promotion gates
+          while observing error budgets.
+        </p>
+
+        <!-- Start Form -->
+        <form id="release-form" class="release-form">
+          <label for="version" class="input-label">Candidate Version Tag</label>
+          <div class="input-group">
+            <input id="version" name="version" value="v1.1.0" placeholder="e.g. v1.1.0"
+                   pattern="v[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}" required maxlength="13" autocomplete="off">
+            <button class="btn btn-primary" id="start" type="submit">Deploy Canary (10%) <span>🚀</span></button>
+          </div>
+          <div class="quick-tags">
+            <button type="button" class="tag-btn" onclick="document.getElementById('version').value='v1.1.0'">v1.1.0</button>
+            <button type="button" class="tag-btn" onclick="document.getElementById('version').value='v1.2.0'">v1.2.0</button>
+            <button type="button" class="tag-btn" onclick="document.getElementById('version').value='v2.0.0'">v2.0.0</button>
+          </div>
+        </form>
+
+        <!-- Rollout Stages Stepper -->
+        <div class="stepper" aria-label="Deployment Stages">
+          <div id="step-10" class="step-node">
+            <span class="step-num">01</span>
+            <b>10% Exposure</b>
+            <small>Canary Smoke Gate</small>
+          </div>
+          <div class="step-track"></div>
+          <div id="step-50" class="step-node">
+            <span class="step-num">02</span>
+            <b>50% Load Split</b>
+            <small>Performance Check</small>
+          </div>
+          <div class="step-track"></div>
+          <div id="step-100" class="step-node">
+            <span class="step-num">03</span>
+            <b>100% Promotion</b>
+            <small>Baseline Updated</small>
+          </div>
+        </div>
+
+        <!-- Action Controls -->
+        <div class="action-row">
+          <button class="btn btn-teal" id="traffic">⚡ Send 100 Lab Requests</button>
+          <button class="btn btn-indigo" id="advance">Advance Rollout Stage →</button>
+        </div>
+
+        <div class="stream-control">
+          <label class="switch-container">
+            <input type="checkbox" id="stream-toggle">
+            <span class="switch-slider"></span>
+          </label>
+          <span class="stream-label">Auto-Stream Real-Time Traffic (10 req/s)</span>
+        </div>
+
+        <!-- Health Gate Banner -->
+        <div class="guardrail-box">
+          <span class="guard-icon">🛡️</span>
+          <div class="guard-info">
+            <strong>Automated Health Gate Active</strong>
+            <small id="gate-copy">A clean batch without anomalies is required to advance.</small>
+          </div>
+        </div>
+
+        <!-- Failure Injection & Rollback -->
+        <div class="danger-zone">
+          <button id="fault" class="btn btn-hazard">⚠️ Inject Candidate Anomaly (HTTP 500)</button>
+          <button id="rollback" class="btn btn-danger">↶ Emergency Rollback</button>
+        </div>
+      </section>
+
+      <!-- Panel 2: Traffic Allocation & Telemetry -->
+      <section class="panel" id="telemetry">
+        <div class="panel-header">
+          <div>
+            <span class="eyebrow">STAGE 02 / REAL-TIME TELEMETRY</span>
+            <h2>Traffic Split &amp; Blast Radius</h2>
+          </div>
+          <span class="pill-badge" id="traffic-label">UPSTREAM SPLIT</span>
+        </div>
+
+        <div class="allocation-container">
+          <!-- Donut Chart -->
+          <div class="donut-chart" id="donut" role="img" aria-label="Canary Traffic Allocation">
+            <div class="donut-inner">
+              <span id="donut-value" class="donut-pct">0%</span>
+              <small class="donut-label">CANARY LOAD</small>
+            </div>
+          </div>
+
+          <!-- Channel Legends -->
+          <div class="legend-box">
+            <div class="legend-item">
+              <span class="status-dot teal"></span>
+              <div class="legend-info">
+                <b>Stable Cluster</b>
+                <small id="legend-stable-version">v1.0.0</small>
+              </div>
+              <strong id="stable-percent" class="legend-stat">100%</strong>
+            </div>
+
+            <div class="legend-item">
+              <span class="status-dot orange"></span>
+              <div class="legend-info">
+                <b>Canary Cluster</b>
+                <small id="legend-canary-version">v1.1.0</small>
+              </div>
+              <strong id="canary-percent" class="legend-stat">0%</strong>
+            </div>
+
+            <!-- Health Score Gauge -->
+            <div class="health-gauge">
+              <div class="health-meta">
+                <span>Canary Health Score</span>
+                <strong id="health-score-val">100%</strong>
+              </div>
+              <div class="health-bar-track">
+                <div id="health-bar-fill" class="health-bar-fill" style="width: 100%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Request Counters -->
+        <div class="counters-grid">
+          <div class="counter-box">
+            <span>Stable Requests</span>
+            <b id="stable-hits">0</b>
+          </div>
+          <div class="counter-box">
+            <span>Canary Requests</span>
+            <b id="canary-hits">0</b>
+          </div>
+          <div class="counter-box failed">
+            <span>Failed / Dropped</span>
+            <b id="failed-hits" class="text-danger">0</b>
+          </div>
+        </div>
+
+        <!-- Live Latency Comparison -->
+        <div class="latency-strip">
+          <div class="latency-card">
+            <span>Stable Latency</span>
+            <strong id="stable-latency">21 ms</strong>
+          </div>
+          <div class="latency-card">
+            <span>Canary Latency</span>
+            <strong id="canary-latency">24 ms</strong>
+          </div>
+          <div class="latency-card">
+            <span>Blast Radius Limit</span>
+            <strong id="blast-radius">10% MAX</strong>
+          </div>
+        </div>
+
+        <!-- Dynamic Architectural Insight -->
+        <div class="insight-banner" id="insight">
+          Create a release candidate to observe gradual exposure. Traffic is simulated safely inside the Spring Boot container.
+        </div>
+      </section>
+    </div>
+
+    <!-- Live Request Traces Console -->
+    <section class="panel trace-panel">
+      <div class="panel-header">
+        <div>
+          <span class="eyebrow">LIVE TRACE LOGS</span>
+          <h2>Real-Time Request Routing Stream</h2>
+        </div>
+        <span class="chip chip-accent">LIVE TELEMETRY</span>
+      </div>
+      <div id="trace-feed" class="trace-feed">
+        <div class="trace-empty">No requests recorded yet. Click "Send 100 Lab Requests" to inspect traces.</div>
+      </div>
+    </section>
+
+    <!-- CI/CD Automation Blueprint -->
+    <section class="panel pipeline-panel" id="pipeline-blueprint">
+      <div class="panel-header">
+        <div>
+          <span class="eyebrow">AUTOMATION BLUEPRINT</span>
+          <h2>Continuous Delivery Workflow Engine</h2>
+        </div>
+        <span class="tag-release">.github/workflows/cd.yml</span>
+      </div>
+      <div class="pipeline-grid">
+        <div class="pipe-node">
+          <span class="pipe-idx">01</span>
+          <b>Unit &amp; Integration</b>
+          <small>Maven verify + JUnit 5</small>
+        </div>
+        <div class="pipe-arr">→</div>
+        <div class="pipe-node">
+          <span class="pipe-idx">02</span>
+          <b>OCI Containerize</b>
+          <small>Multi-stage Docker build</small>
+        </div>
+        <div class="pipe-arr">→</div>
+        <div class="pipe-node">
+          <span class="pipe-idx">03</span>
+          <b>Image Registry</b>
+          <small>Docker Hub push digest</small>
+        </div>
+        <div class="pipe-arr">→</div>
+        <div class="pipe-node">
+          <span class="pipe-idx">04</span>
+          <b>Canary 10% → 50%</b>
+          <small>Nginx dynamic upstream</small>
+        </div>
+        <div class="pipe-arr">→</div>
+        <div class="pipe-node">
+          <span class="pipe-idx">05</span>
+          <b>SLO Verification</b>
+          <small>100% Promote / Rollback</small>
+        </div>
+      </div>
+    </section>
+
+    <!-- Activity Stream & Guide Grid -->
+    <div class="bottom-grid">
+      <!-- Activity Stream -->
+      <section class="panel" id="activity">
+        <div class="panel-header">
+          <div>
+            <span class="eyebrow">AUDIT &amp; TELEMETRY LOG</span>
+            <h2>Deployment Activity Stream</h2>
+          </div>
+          <button class="btn btn-sm btn-secondary" id="export">Export JSON Audit ↓</button>
+        </div>
+        <div id="events" class="events-scroll" aria-live="polite"></div>
+        <div class="activity-footer">
+          <small>In-memory classroom lab state resets on server restart.</small>
+          <button id="reset" class="btn-text">Reset Lab State</button>
+        </div>
+      </section>
+
+      <!-- Experiment Runbook -->
+      <section class="panel guide-panel" id="guide">
+        <div class="panel-header">
+          <div>
+            <span class="eyebrow">LAB PROCEDURE &amp; EVALUATION</span>
+            <h2>Experiment 9.2 Runbook</h2>
+          </div>
+          <span class="chip">GUIDE</span>
+        </div>
+
+        <details open class="guide-item">
+          <summary>01 &nbsp; Healthy Canary Rollout (10% → 50% → 100%)</summary>
+          <p>
+            Start candidate <code>v1.1.0</code> with 10% traffic. Click <strong>Send 100 Lab Requests</strong>.
+            Health gates confirm 0 failures. Advance rollout to 50%, verify a second batch, then promote to 100%.
+            The candidate seamlessly becomes the new stable baseline.
+          </p>
+        </details>
+
+        <details class="guide-item">
+          <summary>02 &nbsp; Anomaly Detection &amp; Automated Safety Rollback</summary>
+          <p>
+            Start candidate <code>v1.2.0</code>. Click <strong>Inject Candidate Anomaly</strong> to simulate
+            microservice failure. Send 100 requests. The health gate detects errors and triggers instant
+            automated rollback, restoring 100% traffic to stable without operator intervention.
+          </p>
+        </details>
+
+        <details class="guide-item">
+          <summary>03 &nbsp; Production Docker &amp; Nginx Deployment</summary>
+          <p>
+            For production deployment, run <code>docker compose up --build -d</code>. The root compose config
+            launches separate backend and frontend containers with upstream routing via <code>deploy/release.sh</code>.
+          </p>
+        </details>
+
+        <details class="guide-item">
+          <summary>04 &nbsp; Submission Artifact Checklist</summary>
+          <p>
+            Capture screenshots at 10% canary, 50% load split, 100% promotion, the automated rollback alert,
+            and export the signed JSON evidence containing your student attribution.
+          </p>
+        </details>
+      </section>
+    </div>
+
+    <!-- Live Backend Probe Inspector -->
+    <section class="panel backend-probe-panel">
+      <div class="panel-header">
+        <div>
+          <span class="eyebrow">LIVE UPSTREAM INSPECTOR</span>
+          <h2>Live Backend Endpoint Probe</h2>
+        </div>
+        <button id="probe-inline" class="btn btn-sm btn-primary">Probe GET /api/hello</button>
+      </div>
+      <p class="panel-desc">Direct HTTP inspection to verify container slot headers, student identity, and release version.</p>
+      <pre id="probe-output" class="code-terminal">Click "Probe Live Backend" to query GET /api/hello directly from Spring Boot.</pre>
+    </section>
+
+    <!-- Global Footer -->
+    <footer class="main-footer">
+      <div class="footer-left">
+        <strong>CanaryDock</strong>
+        <span class="sep">/</span>
+        <span>Experiment 9.2: Continuous Development &amp; Release Strategies</span>
+      </div>
+      <div class="footer-center">
+        <span>Student: <strong>Harshit Thakur</strong> (UID: <strong>23BAI70435</strong>)</span>
+      </div>
+      <div class="footer-right">
+        <span>Full Stack Development II · CO6 / BT6</span>
+      </div>
+    </footer>
+  </main>
+
+  <!-- Global Toast Notification -->
+  <div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

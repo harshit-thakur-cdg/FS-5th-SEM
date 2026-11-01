@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Experiment 6.1 | User Management</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f5f7fb;
+            color: #1f2937;
+        }
+
+        /* ================= HEADER ================= */
+
+        .header {
+            background: #111827;
+            color: white;
+            padding: 22px 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            width: 42px;
+            height: 42px;
+            background: #2563eb;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 21px;
+            font-weight: bold;
+        }
+
+        .brand h1 {
+            font-size: 20px;
+        }
+
+        .brand p {
+            color: #9ca3af;
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        .experiment-badge {
+            background: #1f2937;
+            border: 1px solid #374151;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #d1d5db;
+        }
+
+        /* ================= MAIN ================= */
+
+        .container {
+            width: 88%;
+            max-width: 1150px;
+            margin: 35px auto;
+        }
+
+        .welcome {
+            margin-bottom: 25px;
+        }
+
+        .welcome h2 {
+            font-size: 27px;
+            color: #111827;
+        }
+
+        .welcome p {
+            color: #6b7280;
+            margin-top: 6px;
+        }
+
+        /* ================= STATS ================= */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 14px;
+            padding: 22px;
+            border: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: #eff6ff;
+            color: #2563eb;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 22px;
+        }
+
+        .stat-info span {
+            display: block;
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 4px;
+        }
+
+        .stat-info strong {
+            font-size: 24px;
+            color: #111827;
+        }
+
+        /* ================= CARDS ================= */
+
+        .card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title h3 {
+            font-size: 17px;
+            color: #111827;
+        }
+
+        .card-title p {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 3px;
+        }
+
+        .section-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 9px;
+            background: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* ================= FORM ================= */
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 15px;
+            align-items: end;
+        }
+
+        .field label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: #4b5563;
+            margin-bottom: 7px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            height: 42px;
+            padding: 0 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            outline: none;
+            font-size: 13px;
+            background: white;
+            color: #374151;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        }
+
+        /* ================= BUTTONS ================= */
+
+        button {
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            transition: 0.2s;
+        }
+
+        .primary-btn {
+            height: 42px;
+            padding: 0 20px;
+            background: #2563eb;
+            color: white;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .primary-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .refresh-btn {
+            background: #f3f4f6;
+            color: #374151;
+            padding: 9px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .refresh-btn:hover {
+            background: #e5e7eb;
+        }
+
+        /* ================= TOOLBAR ================= */
+
+        .toolbar {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
+            gap: 14px;
+            align-items: end;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            padding: 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .apply-btn {
+            height: 42px;
+            padding: 0 20px;
+            background: #111827;
+            color: white;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .apply-btn:hover {
+            background: #374151;
+        }
+
+        /* ================= TABLE ================= */
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f9fafb;
+        }
+
+        th {
+            padding: 13px 14px;
+            text-align: left;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #6b7280;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        td {
+            padding: 14px;
+            border-bottom: 1px solid #f0f1f3;
+            font-size: 13px;
+        }
+
+        tbody tr {
+            transition: 0.15s;
+        }
+
+        tbody tr:hover {
+            background: #f9fafb;
+        }
+
+        .uid {
+            font-weight: 600;
+            color: #2563eb;
+        }
+
+        .user-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #eef2ff;
+            color: #4f46e5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .delete-btn {
+            background: #fef2f2;
+            color: #dc2626;
+            padding: 7px 13px;
+            border-radius: 7px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .delete-btn:hover {
+            background: #fee2e2;
+        }
+
+        /* ================= PAGINATION ================= */
+
+        .table-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 18px;
+        }
+
+        .showing {
+            color: #6b7280;
+            font-size: 12px;
+        }
+
+        .pagination {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .page-btn {
+            min-width: 34px;
+            height: 34px;
+            border-radius: 7px;
+            background: white;
+            border: 1px solid #d1d5db;
+            color: #374151;
+            font-size: 12px;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            background: #f3f4f6;
+        }
+
+        .page-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .page-number {
+            padding: 0 12px;
+            font-size: 12px;
+            color: #4b5563;
+            font-weight: 600;
+        }
+
+        /* ================= MESSAGE ================= */
+
+        .message {
+            margin-top: 12px;
+            font-size: 12px;
+            color: #2563eb;
+            min-height: 16px;
+        }
+
+        /* ================= EMPTY ================= */
+
+        .empty {
+            text-align: center;
+            padding: 35px;
+            color: #9ca3af;
+            font-size: 13px;
+        }
+
+        /* ================= FOOTER ================= */
+
+        .footer {
+            text-align: center;
+            color: #9ca3af;
+            font-size: 11px;
+            padding: 10px 0 30px;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 850px) {
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .toolbar {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .container {
+                width: 94%;
+            }
+
+        }
+
+        @media (max-width: 600px) {
+
+            .header {
+                padding: 18px 4%;
+            }
+
+            .experiment-badge {
+                display: none;
+            }
+
+            .toolbar {
+                grid-template-columns: 1fr;
+            }
+
+            .table-footer {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ================= HEADER ================= -->
+
+<header class="header">
+
+    <div class="brand">
+
+        <div class="logo">
+            U
+        </div>
+
+        <div>
+
+            <h1>User Management</h1>
+
+            <p>Pagination &amp; Sorting REST API</p>
+
+        </div>
+
+    </div>
+
+
+    <div class="experiment-badge">
+        Experiment 6.1
+    </div>
+
+</header>
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="container">
+
+
+    <!-- WELCOME -->
+
+    <div class="welcome">
+
+        <h2>Welcome back 👋</h2>
+
+        <p>
+            Manage users efficiently with pagination and sorting.
+        </p>
+
+    </div>
+
+
+    <!-- ================= STATISTICS ================= -->
+
+    <div class="stats">
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                👥
+            </div>
+
+            <div class="stat-info">
+
+                <span>Total Users</span>
+
+                <strong id="totalUsers">
+                    0
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                📄
+            </div>
+
+            <div class="stat-info">
+
+                <span>Current Page</span>
+
+                <strong id="currentPageDisplay">
+                    1
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                ↕
+            </div>
+
+            <div class="stat-info">
+
+                <span>Items Per Page</span>
+
+                <strong id="pageSizeDisplay">
+                    5
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= ADD USER ================= -->
+
+    <div class="card">
+
+
+        <div class="card-header">
+
+            <div class="card-title">
+
+                <div class="section-icon">
+                    +
+                </div>
+
+                <div>
+
+                    <h3>Add New User</h3>
+
+                    <p>Create a new user record</p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="form-grid">
+
+
+            <div class="field">
+
+                <label>
+                    USER ID
+                </label>
+
+                <input
+                    type="text"
+                    id="uid"
+                    placeholder="e.g. E20474">
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    FULL NAME
+                </label>
+
+                <input
+                    type="text"
+                    id="name"
+                    placeholder="Enter user name">
+
+            </div>
+
+
+            <button
+                class="primary-btn"
+                onclick="addUser()">
+
+                + Add User
+
+            </button>
+
+
+        </div>
+
+
+        <div
+            id="message"
+            class="message">
+        </div>
+
+    </div>
+
+
+    <!-- ================= USERS ================= -->
+
+    <div class="card">
+
+
+        <div class="card-header">
+
+            <div class="card-title">
+
+                <div class="section-icon">
+                    👤
+                </div>
+
+                <div>
+
+                    <h3>Users</h3>
+
+                    <p>
+                        Browse and manage user records
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <button
+                class="refresh-btn"
+                onclick="loadUsers()">
+
+                ↻ Refresh
+
+            </button>
+
+        </div>
+
+
+        <!-- TOOLBAR -->
+
+        <div class="toolbar">
+
+
+            <div class="field">
+
+                <label>
+                    USERS PER PAGE
+                </label>
+
+                <select id="pageSize">
+
+                    <option value="5">
+                        5 users
+                    </option>
+
+                    <option value="10">
+                        10 users
+                    </option>
+
+                    <option value="15">
+                        15 users
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    SORT BY
+                </label>
+
+                <select id="sortBy">
+
+                    <option value="uid">
+                        UID
+                    </option>
+
+                    <option value="name">
+                        Name
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    ORDER
+                </label>
+
+                <select id="order">
+
+                    <option value="asc">
+                        Ascending
+                    </option>
+
+                    <option value="desc">
+                        Descending
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <button
+                class="apply-btn"
+                onclick="applySettings()">
+
+                Apply Filters
+
+            </button>
+
+        </div>
+
+
+        <!-- TABLE -->
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                <tr>
+
+                    <th>
+                        User ID
+                    </th>
+
+                    <th>
+                        User
+                    </th>
+
+                    <th>
+                        Action
+                    </th>
+
+                </tr>
+
+                </thead>
+
+
+                <tbody id="userTable">
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- FOOTER -->
+
+        <div class="table-footer">
+
+
+            <div
+                class="showing"
+                id="showingText">
+
+                Showing users
+
+            </div>
+
+
+            <div class="pagination">
+
+
+                <button
+                    class="page-btn"
+                    id="previous"
+                    onclick="previousPage()">
+
+                    ←
+
+                </button>
+
+
+                <span
+                    class="page-number"
+                    id="pageInfo">
+
+                    Page 1 of 1
+
+                </span>
+
+
+                <button
+                    class="page-btn"
+                    id="next"
+                    onclick="nextPage()">
+
+                    →
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer">
+
+        Experiment 6.1 • Pagination &amp; Sorting REST API
+
+    </div>
+
+
+</main>
+
+
+<script>
+
+
+    /* ================= VARIABLES ================= */
+
+    let currentPage = 0;
+
+    let totalPages = 1;
+
+
+    /* ================= LOAD USERS ================= */
+
+    async function loadUsers() {
+
+        const size =
+            document.getElementById("pageSize").value;
+
+        const sortBy =
+            document.getElementById("sortBy").value;
+
+        const order =
+            document.getElementById("order").value;
+
+
+        const url =
+            `/api/users?page=${currentPage}` +
+            `&size=${size}` +
+            `&sortBy=${sortBy}` +
+            `&order=${order}`;
+
+
+        try {
+
+            const response =
+                await fetch(url);
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Unable to load users"
+                );
+
+            }
+
+
+            const data =
+                await response.json();
+
+
+            const table =
+                document.getElementById(
+                    "userTable"
+                );
+
+
+            table.innerHTML = "";
+
+
+            if (data.content.length === 0) {
+
+                table.innerHTML = `
+
+                    <tr>
+
+                        <td
+                            colspan="3"
+                            class="empty">
+
+                            No users found.
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+            }
+
+
+            data.content.forEach(user => {
+
+
+                const initial =
+                    user.name
+                        .charAt(0)
+                        .toUpperCase();
+
+
+                const row =
+                    document.createElement("tr");
+
+
+                row.innerHTML = `
+
+                    <td class="uid">
+                        ${user.uid}
+                    </td>
+
+                    <td>
+
+                        <div class="user-cell">
+
+                            <div class="avatar">
+                                ${initial}
+                            </div>
+
+                            <span class="user-name">
+                                ${user.name}
+                            </span>
+
+                        </div>
+
+                    </td>
+
+                    <td>
+
+                        <button
+                            class="delete-btn"
+                            onclick="deleteUser('${user.uid}')">
+
+                            Delete
+
+                        </button>
+
+                    </td>
+
+                `;
+
+
+                table.appendChild(row);
+
+            });
+
+
+            totalPages =
+                data.totalPages || 1;
+
+
+            document.getElementById(
+                "pageInfo"
+            ).innerText =
+                `Page ${data.number + 1} of ${totalPages}`;
+
+
+            document.getElementById(
+                "currentPageDisplay"
+            ).innerText =
+                data.number + 1;
+
+
+            document.getElementById(
+                "pageSizeDisplay"
+            ).innerText =
+                data.size;
+
+
+            document.getElementById(
+                "previous"
+            ).disabled =
+                data.first;
+
+
+            document.getElementById(
+                "next"
+            ).disabled =
+                data.last;
+
+
+            const start =
+                data.totalElements === 0
+                    ? 0
+                    : data.number * data.size + 1;
+
+
+            const end =
+                Math.min(
+                    (data.number + 1) * data.size,
+                    data.totalElements
+                );
+
+
+            document.getElementById(
+                "showingText"
+            ).innerText =
+                `Showing ${start}–${end} of ${data.totalElements} users`;
+
+
+            loadTotalUsers();
+
+        }
+
+        catch (error) {
+
+            console.error(error);
+
+            showMessage(
+                "Error loading users"
+            );
+
+        }
+
+    }
+
+
+    /* ================= TOTAL USERS ================= */
+
+    async function loadTotalUsers() {
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/users/count"
+                );
+
+
+            const count =
+                await response.json();
+
+
+            document.getElementById(
+                "totalUsers"
+            ).innerText = count;
+
+        }
+
+        catch (error) {
+
+            console.error(error);
+
+        }
+
+    }
+
+
+    /* ================= ADD USER ================= */
+
+    async function addUser() {
+
+        const uid =
+            document.getElementById(
+                "uid"
+            ).value.trim();
+
+
+        const name =
+            document.getElementById(
+                "name"
+            ).value.trim();
+
+
+        if (!uid || !name) {
+
+            showMessage(
+                "Please enter both UID and name."
+            );
+
+            return;
+
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/users",
+                    {
+
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+
+                            uid: uid,
+
+                            name: name
+
+                        })
+
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Unable to add user"
+                );
+
+            }
+
+
+            document.getElementById(
+                "uid"
+            ).value = "";
+
+
+            document.getElementById(
+                "name"
+            ).value = "";
+
+
+            currentPage = 0;
+
+
+            showMessage(
+                "✓ User added successfully."
+            );
+
+
+            loadUsers();
+
+        }
+
+        catch (error) {
+
+            console.error(error);
+
+            showMessage(
+                "Unable to add user. UID may already exist."
+            );
+
+        }
+
+    }
+
+
+    /* ================= DELETE USER ================= */
+
+    async function deleteUser(uid) {
+
+        const confirmed =
+            confirm(
+                `Delete user ${uid}?`
+            );
+
+
+        if (!confirmed) {
+
+            return;
+
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `/api/users/${uid}`,
+                    {
+                        method: "DELETE"
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Unable to delete user"
+                );
+
+            }
+
+
+            if (
+                currentPage > 0 &&
+                document.querySelectorAll(
+                    "#userTable tr"
+                ).length === 1
+            ) {
+
+                currentPage--;
+
+            }
+
+
+            loadUsers();
+
+        }
+
+        catch (error) {
+
+            console.error(error);
+
+            showMessage(
+                "Unable to delete user."
+            );
+
+        }
+
+    }
+
+
+    /* ================= APPLY ================= */
+
+    function applySettings() {
+
+        currentPage = 0;
+
+        loadUsers();
+
+    }
+
+
+    /* ================= NEXT ================= */
+
+    function nextPage() {
+
+        if (
+            currentPage <
+            totalPages - 1
+        ) {
+
+            currentPage++;
+
+            loadUsers();
+
+        }
+
+    }
+
+
+    /* ================= PREVIOUS ================= */
+
+    function previousPage() {
+
+        if (currentPage > 0) {
+
+            currentPage--;
+
+            loadUsers();
+
+        }
+
+    }
+
+
+    /* ================= MESSAGE ================= */
+
+    function showMessage(text) {
+
+        const message =
+            document.getElementById(
+                "message"
+            );
+
+
+        message.innerText = text;
+
+
+        setTimeout(() => {
+
+            message.innerText = "";
+
+        }, 3000);
+
+    }
+
+
+    /* ================= INITIAL LOAD ================= */
+
+    loadUsers();
+
+
+</script>
+
+</body>
+
+</html>
